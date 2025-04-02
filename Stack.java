@@ -1,5 +1,4 @@
-package BookManagement;
-
+package com.dsgp.library;
 public class Stack {
 	private checkingNode top;
 

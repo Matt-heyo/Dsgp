@@ -1,4 +1,6 @@
-package BookManagement;
+package com.dsgp.library;
+
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Scanner;
 
@@ -52,6 +54,18 @@ public class Driver {
 		}
 	}
 
+	
+/*public static void generateRandomPassword(int length) {
+        SecureRandom random = new SecureRandom();
+        String password = random.ints(length, 33, 126)
+                .mapToObj(i -> String.valueOf((char) i))
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
+
+        System.out.println("Generated Password: " + password);
+        
+    }*/
+	
 	private static void registerUser(Scanner scan) {
 		try {
 			System.out.print("Enter username: ");
@@ -60,7 +74,8 @@ public class Driver {
 				System.out.println("Username cannot be empty.");
 				return;
 			}
-
+			
+			generateRandomPassword(8); 
 			System.out.print("Enter password: ");
 			String password = scan.nextLine().trim();
 			if (password.isEmpty()) {
@@ -219,27 +234,27 @@ public class Driver {
 		switch (checkInOutChoice) {
 			case 1:
 				System.out.print("Enter your library card number: ");
-	            String libraryCardNumber = scan.nextLine();
-	            if (libraryCardNumber.isEmpty()) {
-	                System.out.println("Library card number cannot be empty.");
-	                return;
-	            }
+				String libraryCardNumber = scan.nextLine();
+				if (libraryCardNumber.isEmpty()) {
+					System.out.println("Library card number cannot be empty.");
+					return;
+				}
 				System.out.print("Enter the title of the book to check out: ");
 				String checkOutTitle = scan.nextLine().toLowerCase();
-				library.checkOutBook(checkOutTitle, libraryCardNumber); 
+				managebooks.checkoutBook(libraryCardNumber, checkOutTitle);
 				break;
 
 			case 2:
 				System.out.print("Enter your library card number: ");
-	             libraryCardNumber = scan.nextLine();
-	            if (libraryCardNumber.isEmpty()) {
-	                System.out.println("Library card number cannot be empty.");
-	                return;
-	            }
+				libraryCardNumber = scan.nextLine();
+				if (libraryCardNumber.isEmpty()) {
+					System.out.println("Library card number cannot be empty.");
+					return;
+				}
 				System.out.print("Enter the title of the book to check in: ");
 				String checkInTitle = scan.nextLine().toLowerCase();
-				library.checkInBook(checkInTitle, libraryCardNumber);
-		        break;
+				managebooks.checkInBook(libraryCardNumber, checkInTitle);
+				break;
 			
 			case 3: 
 				library.undoLastCheckOut(); 
@@ -250,8 +265,8 @@ public class Driver {
 				break;
 			
 			default:
-				System.out.println("Invalid option. Please try again.");
-		} 
+				System.out.println("Invalid choice. Please try again.");
+		}
 	}
 
 	private static void handleStatistics(StatLibrary statLibrary, Scanner scan) {

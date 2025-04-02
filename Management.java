@@ -1,4 +1,5 @@
-package BookManagement;
+package com.dsgp.library;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,16 +9,14 @@ public class Management {
 
 		private Node head;
 		private Scanner scan = new Scanner(System.in);
-		private PatronNode tailPatron;
-		private PatronNode headPatron;
+		private LinkedList<Patron> patrons;
 		private LibraryBST libraryBST;
 		private StatLibrary statLibrary;
 		
 		public Management() 
 		{
 			this.head=null;
-			this.headPatron=null;
-			this.tailPatron=null;
+			this.patrons = new LinkedList<>();
 			this.libraryBST = new LibraryBST();
 			 this.statLibrary = new StatLibrary();
 			
@@ -26,6 +25,7 @@ public class Management {
 		public Management(StatLibrary statLibrary,LibraryBST libraryBST) {
 	        this.statLibrary = statLibrary;
 	        this.libraryBST = new LibraryBST();
+	        this.patrons = new LinkedList<>();
 	    }
 
 		public Node getHead()
@@ -347,55 +347,90 @@ public class Management {
 		}
 
 			public void addPatron(Patron patron) {
-			    PatronNode newNode = new PatronNode(patron);
-			    if (tailPatron == null) {
-			        headPatron = tailPatron = newNode;
-			    } else {
-			        tailPatron.next = newNode;
-			        tailPatron = newNode;
-			    }
-			    statLibrary.addPatron(patron); // Add patron to StatLibrary
+			    patrons.add(patron);
+			    statLibrary.addPatron(patron);
 			    System.out.println("Added Patron: " + patron.getName()); 
 			}
 			
 		public void checkoutBook() {
-			 try {
-		            System.out.print("Enter patron library card number: ");
-		            int libraryCardNumber = scan.nextInt();
-		            scan.nextLine(); // Consume newline
+			try {
+	            System.out.print("Enter patron library card number: ");
+	            String libraryCardNumber = scan.nextLine().trim();
+	            if (libraryCardNumber.isEmpty()) {
+	                throw new IllegalArgumentException("Library card number cannot be empty.");
+	            }
 
-		            System.out.print("Enter book title to check out: ");
-		            String inputTitle = scan.nextLine().trim();
-		            if (inputTitle.isEmpty()) {
-		                throw new IllegalArgumentException("Book title cannot be empty.");
-		            }
+	            System.out.print("Enter book title to check out: ");
+	            String inputTitle = scan.nextLine().trim();
+	            if (inputTitle.isEmpty()) {
+	                throw new IllegalArgumentException("Book title cannot be empty.");
+	            }
 
-		            checkoutBook(libraryCardNumber, inputTitle);
-		        } catch (Exception e) {
-		            System.err.println("Error: " + e.getMessage());
-		            scan.nextLine(); // Clear invalid input
-		        }
-		    }
+	            checkoutBook(libraryCardNumber, inputTitle);
+	        } catch (Exception e) {
+	            System.err.println("Error: " + e.getMessage());
+	            scan.nextLine(); // Clear invalid input
+	        }
+		}
 		
-		public void checkoutBook(int libraryCardNumber, String title) {
-		    Patron patron = findPatron(libraryCardNumber);
-		    Books book = libraryBST.searchByTitle(title);  
+		public void checkoutBook(String libraryCardNumber, String title) {
+		    try {
+		        int cardNumber = Integer.parseInt(libraryCardNumber);
+		        Patron patron = findPatron(cardNumber);
+		        Books book = libraryBST.searchByTitle(title);  
 
-		    if (book == null || patron == null) {
-		        System.out.println("Book or Patron not found.");
-		        return;
-		    }
+		        if (patron == null) {
+		            System.out.println("Patron not found with library card number: " + libraryCardNumber);
+		            return;
+		        }
+		        
+		        if (book == null) {
+		            System.out.println("Book not found with title: " + title);
+		            return;
+		        }
 
-		    if (book.getAmount() > 0) {
-		        book.setAmount(book.getAmount() - 1);
-		        patron.checkOutBook(book);  // Add book to patron's checked-out list
-		        statLibrary.checkoutBook(); // Update statistics
-		        System.out.println(patron.getName() + " has checked out " + book.getTitle());
-		    } else {
-		        System.out.println("No copies available for checkout.");
+		        if (book.getAmount() > 0) {
+		            book.setAmount(book.getAmount() - 1);
+		            patron.checkOutBook(book);  // Add book to patron's checked-out list
+		            statLibrary.checkoutBook(); // Update statistics
+		            System.out.println(patron.getName() + " has checked out " + book.getTitle());
+		        } else {
+		            System.out.println("No copies available for checkout.");
+		        }
+		    } catch (NumberFormatException e) {
+		        System.out.println("Invalid library card number format. Please enter a valid number.");
 		    }
 		}
 
+		public void checkInBook(String libraryCardNumber, String title) {
+		    try {
+		        int cardNumber = Integer.parseInt(libraryCardNumber);
+		        Patron patron = findPatron(cardNumber);
+		        Books book = libraryBST.searchByTitle(title);
+
+		        if (patron == null) {
+		            System.out.println("Patron not found with library card number: " + libraryCardNumber);
+		            return;
+		        }
+		        
+		        if (book == null) {
+		            System.out.println("Book not found with title: " + title);
+		            return;
+		        }
+
+		        // Check if the book is in the patron's checked out books
+		        if (patron.getCheckedOutBooks().contains(book)) {
+		            book.setAmount(book.getAmount() + 1);
+		            patron.removeCheckedOutBook(book.getTitle());
+		            System.out.println("Checked in: " + title);
+		            patron.displayPatronInfo();
+		        } else {
+		            System.out.println("This book was not checked out by this patron.");
+		        }
+		    } catch (NumberFormatException e) {
+		        System.out.println("Invalid library card number format. Please enter a valid number.");
+		    }
+		}
 
 		public void removePatronOption()
 		{
@@ -406,51 +441,39 @@ public class Management {
 		}
 		public void removePatron(int libraryCardNumber)
 		{
-			PatronNode current = headPatron;
-		    PatronNode previous = null;
-
-		    while (current != null) {
-		        if (current.patron.getLibraryCardNumber()==(libraryCardNumber)) {
-		            if (previous == null) {
-		                headPatron = current.next;
-		            } else {
-		                previous.next = current.next;
-		            }
-		            if (current == tailPatron) {
-		                tailPatron = previous;
-		            }
-		            statLibrary.removePatron(libraryCardNumber);
-		            System.out.println("Patron with library card number " + libraryCardNumber + " has been removed.");
-		            return;
+			Patron patronToRemove = null;
+		    for (Patron patron : patrons) {
+		        if (patron.getLibraryCardNumber() == libraryCardNumber) {
+		            patronToRemove = patron;
+		            break;
 		        }
-		        previous = current;
-		        current = current.next;
-		}
-		    System.out.println("Patron not found with library card number: " + libraryCardNumber);
+		    }
+		    
+		    if (patronToRemove != null) {
+		        patrons.remove(patronToRemove);
+		        statLibrary.removePatron(libraryCardNumber);
+		        System.out.println("Patron with library card number " + libraryCardNumber + " has been removed.");
+		    } else {
+		        System.out.println("Patron not found with library card number: " + libraryCardNumber);
+		    }
 		}
 		public void viewAllPatronOption()
 		{
-			PatronNode current = headPatron;
-	        if (current == null) {
-	            System.out.println("No patrons available.");
-	            return;
-	        }
-	        while (current != null) {
-	            current.patron.displayPatronInfo();
-	            current = current.next;
-	        }
-
+			if (patrons.isEmpty()) {
+			    System.out.println("No patrons available.");
+			    return;
+			}
+			for (Patron patron : patrons) {
+			    patron.displayPatronInfo();
+			}
 		}
 		public Patron findPatron(int libraryCardNumber) {
-		    PatronNode current = headPatron;
-		    while (current != null) {
-		        if (current.patron.getLibraryCardNumber() == libraryCardNumber) {
-		            return current.patron;
+		    for (Patron patron : patrons) {
+		        if (patron.getLibraryCardNumber() == libraryCardNumber) {
+		            return patron;
 		        }
-		        current = current.next;
 		    }
-		    System.out.println("Patron not found with library card number: " + libraryCardNumber); // Debugging output
-		    return null; // Patron not found
+		    return null;
 		}		
 		
 		public void viewPatronCheckoutBooks() {
@@ -463,8 +486,6 @@ public class Management {
 		        
 		        if (patron != null) {
 		            System.out.println("Checked-out books for " + patron.getName() + ": ");
-		            
-		            // Get the checked-out books list
 		            LinkedList<Books> checkedOutBooks = patron.getCheckedOutBooks();
 		            
 		            if (checkedOutBooks.isEmpty()) {
@@ -475,7 +496,7 @@ public class Management {
 		                }
 		            }
 		        } else {
-		            System.err.println("Error: Patron not found.");
+		            System.out.println("Patron not found with library card number: " + findLibraryCardNumber);
 		        }
 		    } catch (Exception e) {
 		        System.err.println("Error: Invalid input. Please enter a valid library card number.");

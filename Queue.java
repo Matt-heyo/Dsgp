@@ -1,5 +1,4 @@
-package BookManagement;
-
+package com.dsgp.library;
 public class Queue {
 	private checkingNode front, rear;
 

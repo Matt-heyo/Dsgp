@@ -1,4 +1,5 @@
-package BookManagement;
+package com.dsgp.library;
+
 import java.io.*;
 import java.util.*;
 import java.security.MessageDigest;

@@ -1,4 +1,5 @@
-package BookManagement;
+package com.dsgp.library;
+
 
 public class Books {
 private String title;
@@ -14,7 +15,7 @@ public Books()
 	author="F. Scott Fitzgerald";
 	ISBN=074324;
 	pubYear=1925;
-	isAvailable=false;
+	isAvailable=true;
 	amount=0;// to check the amount of books added
 }
 
@@ -32,6 +33,8 @@ public Books(Books bk)
 	this.ISBN=bk.ISBN;
 	this.title=bk.title;
 	this.amount=bk.amount;
+	this.isAvailable=bk.isAvailable;
+	this.pubYear=bk.pubYear;
 }
 public String getTitle() {
 	return title;

@@ -1,6 +1,8 @@
-package BookManagement;
+package com.dsgp.library;
+
 
 import java.util.HashMap;
+import java.security.SecureRandom;
 
 public class User {
 	private String username;
@@ -37,6 +39,8 @@ public class User {
         this.role = cp.role;
     }
 
+    
+    
     // Check password
     public boolean checkPassword(String password) {
         return this.password.equals(password);
@@ -75,6 +79,16 @@ public class User {
             System.out.println("User not found.");
         }
     }
+    
+    public static void generateRandomPassword(int length) {
+        SecureRandom random = new SecureRandom();
+        String password = random.ints(length, 33, 126)
+                .mapToObj(i -> String.valueOf((char) i))
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
+
+        System.out.println("Generated Password: " + password);
+    }
 
     private static boolean verifyLogin(String username, String password, User adminUser ) {
     	// Check against the admin user
@@ -88,6 +102,7 @@ public class User {
     public static User getUser(String username) {
         return users.get(username);
     }
+  
 
     // Getters
     public String getUsername() {
