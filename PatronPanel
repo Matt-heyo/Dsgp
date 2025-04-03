@@ -1,0 +1,25 @@
+package BookManagement;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
+public class PatronPanel extends JPanel {
+
+    public PatronPanel() {
+        setLayout(new BorderLayout());
+
+        JLabel titleLabel = new JLabel("Patron Management", SwingConstants.CENTER);
+        add(titleLabel, BorderLayout.NORTH);
+
+        DefaultListModel<String> patronListModel = new DefaultListModel<>();
+        JList<String> patronList = new JList<>(patronListModel);
+        List<Patron> patrons = FileManager.loadPatronsFromFile();
+
+        for (Patron patron : patrons) {
+            patronListModel.addElement(patron.getName() + " - Card#: " + patron.getLibraryCardNumber());
+        }
+
+        add(new JScrollPane(patronList), BorderLayout.CENTER);
+    }
+}
