@@ -81,7 +81,7 @@ public void setAmount(int amount) {
 }
 
 public void Display() {
-	System.out.println(this); // Call toString() implicitly
+	System.out.println(this); 
 	System.out.println("----------------------------\n");
 	 }
  @Override
