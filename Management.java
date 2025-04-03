@@ -241,21 +241,22 @@ public class Management {
 			return count;
 		}
 		//This displays all the book that are in the linked list
-		public List<Books> displayBooks()
-		{
-			List<Books> bookList = new ArrayList<>();
-			if(head ==null) {
-				System.out.println("There is no book on the system");
-				return bookList;
-			}
-			Node temp=head;
-			while(temp!=null) 
-			{
-				temp.book.Display();
-				bookList.add(temp.book);
-				temp=temp.nextNode;
-			}
-			return bookList; 
+	public List<Books> displayBooks() {
+		    List<Books> bookList = new ArrayList<>();
+		    
+		    // Use the LibraryBST to get books in sorted order
+		    libraryBST.inOrderTraversal(bookList);
+		    
+		    if (bookList.isEmpty()) {
+		        System.out.println("There are no books in the system.");
+		    } else {
+		        System.out.println("Books in ascending order:\n");
+		        for (Books book : bookList) {
+		            book.Display(); // Display each book's details
+		        }
+		    }
+		    
+		    return bookList; 
 		}
 		//option to search for a book
 		public void searchForBook() {
