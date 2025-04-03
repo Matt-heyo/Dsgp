@@ -1,0 +1,33 @@
+package BookManagement;
+
+import java.awt.BorderLayout;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class SearchBookPanel extends JPanel {
+
+	private JTextField searchField;
+    private JButton searchButton;
+    private JTextArea searchResults;
+
+    public SearchBookPanel() {
+        setLayout(new BorderLayout());
+
+        JPanel topPanel = new JPanel();
+        topPanel.add(new JLabel("Enter Book Title: "));
+        searchField = new JTextField(20);
+        topPanel.add(searchField);
+        searchButton = new JButton("Search");
+        topPanel.add(searchButton);
+        add(topPanel, BorderLayout.NORTH);
+
+        searchResults = new JTextArea();
+        searchResults.setEditable(false);
+        add(new JScrollPane(searchResults), BorderLayout.CENTER);
+    }
+}
