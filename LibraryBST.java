@@ -1,5 +1,7 @@
 package BookManagement;
 
+import java.util.List;
+
 public class LibraryBST {
 	private BSTNode root;
 
@@ -91,5 +93,17 @@ public class LibraryBST {
         if (leftSearch != null) return leftSearch;
 
         return searchByISBNRec(root.right, ISBN);
+    }
+ // In-order traversal for sorting books and adding to a list
+    public void inOrderTraversal(List<Books> bookList) {
+        inOrderRec(root, bookList);
+    }
+
+    private void inOrderRec(BSTNode root, List<Books> bookList) {
+        if (root != null) {
+            inOrderRec(root.left, bookList);
+            bookList.add(root.book); // Add the book to the list
+            inOrderRec(root.right, bookList);
+        }
     }
 }
