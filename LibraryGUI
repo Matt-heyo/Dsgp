@@ -1,0 +1,123 @@
+package BookManagement;
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.EventQueue;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Scanner;
+
+
+
+public class LibraryGUI {
+    JFrame frame;
+    private JPanel mainPanel; // Keep it private
+    private CardLayout cardLayout;
+
+    public LibraryGUI() {
+        frame = new JFrame("Library Management System");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+
+        mainPanel.add(createLoginPanel(), "Login");
+        mainPanel.add(new RightSidePanel(this), "RightSidePanel"); // Pass the current instance
+
+        frame.getContentPane().add(mainPanel);
+        frame.setVisible(true);
+    }
+
+    private JPanel createLoginPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(192, 192, 192));
+        panel.setForeground(new Color(0, 128, 128));
+
+        JLabel userLabel = new JLabel("Username:");
+        JTextField userField = new JTextField();
+        JLabel passLabel = new JLabel("Password:");
+        JPasswordField passField = new JPasswordField();
+        JButton loginButton = new JButton("Login");
+        JButton registerButton = new JButton("Register");
+
+        loginButton.addActionListener(e -> {
+            String username = userField.getText();
+            String password = new String(passField.getPassword());
+            if (User .verifyLogin(username, password)) {
+                cardLayout.show(mainPanel, "RightSidePanel"); // Show RightSidePanel on successful login
+            } else {
+                JOptionPane.showMessageDialog(frame, "Invalid login credentials.");
+            }
+        });
+
+        registerButton.addActionListener(e -> {
+            String username = userField.getText();
+            String password = new String(passField.getPassword());
+            if (username.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Username and password cannot be empty.");
+                return;
+            }
+            new User(username, password, "user"); // Register new user
+            JOptionPane.showMessageDialog(frame, "User  registered successfully.");
+        });
+
+        panel.setLayout(null);
+        userLabel.setBounds(155, 16, 98, 124);
+        userField.setBounds(155, 93, 300, 59);
+        passLabel.setBounds(155, 107, 300, 124);
+        passField.setBounds(155, 196, 300, 59);
+        loginButton.setBounds(212, 263, 169, 65);
+        registerButton.setBounds(212, 330, 169, 65); // Position for register button
+
+        panel.add(userLabel);
+        panel.add(userField);
+        panel.add(passLabel);
+        panel.add(passField);
+        panel.add(loginButton);
+        panel.add(registerButton);
+
+        JLabel lblNewLabel = new JLabel("Welcome to the Library Management System");
+        lblNewLabel.setFont(new Font("Nanum Gothic", Font.ITALIC, 17));
+        lblNewLabel.setForeground(new Color(0, 0, 0));
+        lblNewLabel.setBounds(119, 6, 398, 30);
+        panel.add(lblNewLabel);
+
+        JLabel lblNewLabel_1 = new JLabel("Login");
+        lblNewLabel_1.setFont(new Font("Nanum Gothic", Font.PLAIN, 15));
+        lblNewLabel_1.setBounds(285, 37, 61, 16);
+        panel.add(lblNewLabel_1);
+
+        return panel;
+    }
+
+    public JPanel getMainPanel() { // Getter method for mainPanel
+        return mainPanel;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(LibraryGUI::new);
+    }
+}
