@@ -1,0 +1,25 @@
+package BookManagement;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
+public class BookManagementPanel extends JPanel {
+
+    public BookManagementPanel() {
+        setLayout(new BorderLayout());
+
+        JLabel titleLabel = new JLabel("Book Management", SwingConstants.CENTER);
+        add(titleLabel, BorderLayout.NORTH);
+
+        DefaultListModel<String> bookListModel = new DefaultListModel<>();
+        JList<String> bookList = new JList<>(bookListModel);
+        List<Books> books = FileManager.loadBooksFromFile();
+        
+        for (Books book : books) {
+            bookListModel.addElement(book.getTitle() + " - " + book.getAuthor());
+        }
+
+        add(new JScrollPane(bookList), BorderLayout.CENTER);
+    }
+}
