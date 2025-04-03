@@ -1,0 +1,86 @@
+package BookManagement;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class RightSidePanel extends JPanel {
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
+    private LibraryGUI mainGUI; // Reference to the main GUI
+
+    public RightSidePanel(LibraryGUI mainGUI) {
+        this.mainGUI = mainGUI; // Store the reference to the main GUI
+        setLayout(new BorderLayout());
+
+        // Create and set the menu bar
+        JMenuBar menuBar = createMenuBar();
+        add(menuBar, BorderLayout.NORTH);
+
+        cardLayout = new CardLayout();
+        contentPanel = new JPanel(cardLayout);
+        
+        // Create instances of the panels
+        CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
+        SearchBookPanel searchBookPanel = new SearchBookPanel();
+        StatisticsPanel statisticsPanel = new StatisticsPanel();
+        BookManagementPanel bookManagementPanel = new BookManagementPanel();
+        PatronPanel patronPanel = new PatronPanel();
+
+        // Adding panels to contentPanel
+        contentPanel.add(bookManagementPanel, "ManageBooks");
+        contentPanel.add(patronPanel, "ManagePatrons");
+        contentPanel.add(checkInOutPanel, "CheckInOut");
+        contentPanel.add(searchBookPanel, "Search");
+        contentPanel.add(statisticsPanel, "Statistics");
+
+        // Home Panel
+        JPanel homePanel = new JPanel();
+        homePanel.add(new JLabel("Welcome to the Library Management System! Select an option from the left menu."));
+        contentPanel.add(homePanel, "Home");
+
+        add(contentPanel, BorderLayout.CENTER);
+    }
+
+    private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setForeground(new Color(32, 178, 170));
+        menuBar.setBackground(new Color(0, 0, 0));
+
+        JMenu menu = new JMenu("Menu");
+        JMenuItem manageBooksItem = new JMenuItem("Manage Books");
+        JMenuItem managePatronsItem = new JMenuItem("Manage Patrons");
+        JMenuItem checkInOutItem = new JMenuItem("Check In/Out");
+        JMenuItem searchBookItem = new JMenuItem("Search for Book");
+        JMenuItem statisticsItem = new JMenuItem("Statistics");
+        JMenuItem logoutItem = new JMenuItem("Logout");
+
+        // Action listeners for menu items
+        manageBooksItem.addActionListener(e -> showPanel("ManageBooks"));
+        managePatronsItem.addActionListener(e -> showPanel("ManagePatrons"));
+        checkInOutItem.addActionListener(e -> showPanel("CheckInOut"));
+        searchBookItem.addActionListener(e -> showPanel("Search"));
+        statisticsItem.addActionListener(e -> showPanel("Statistics"));
+        logoutItem.addActionListener(e -> showLoginPanel()); // Logout action
+
+        // Adding items to the menu
+        menu.add(manageBooksItem);
+        menu.add(managePatronsItem);
+        menu.add(checkInOutItem);
+        menu.add(searchBookItem);
+        menu.add(statisticsItem);
+        menu.add(logoutItem);
+        menuBar.add(menu);
+
+        return menuBar;
+    }
+
+    private void showLoginPanel() {
+        // Switch back to the login panel in the main GUI
+        CardLayout layout = (CardLayout) mainGUI.getMainPanel().getLayout(); // Use the getter
+        layout.show(mainGUI.getMainPanel(), "Login"); // Show the login panel
+    }
+
+    public void showPanel(String panelName) {
+        cardLayout.show(contentPanel, panelName);
+    }
+}
