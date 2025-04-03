@@ -1,0 +1,29 @@
+package BookManagement;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class CheckInOutPanel extends JPanel {
+    private JTextField bookTitleField, cardNumberField;
+    private JButton checkOutButton, checkInButton, undoButton;
+
+    public CheckInOutPanel() {
+        setLayout(new GridLayout(4, 2, 10, 10));
+
+        add(new JLabel("Library Card Number:"));
+        cardNumberField = new JTextField();
+        add(cardNumberField);
+
+        add(new JLabel("Book Title:"));
+        bookTitleField = new JTextField();
+        add(bookTitleField);
+
+        checkOutButton = new JButton("Check Out");
+        checkInButton = new JButton("Check In");
+        undoButton = new JButton("Undo Last Check Out");
+        
+        add(checkOutButton);
+        add(checkInButton);
+        add(undoButton);
+    }
+}
