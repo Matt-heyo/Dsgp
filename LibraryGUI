@@ -36,6 +36,9 @@ public class LibraryGUI {
     private JPanel mainPanel; // Keep it private
     private CardLayout cardLayout;
 
+    /**
+     * @wbp.parser.entryPoint
+     */
     public LibraryGUI() {
         frame = new JFrame("Library Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,7 +48,7 @@ public class LibraryGUI {
         mainPanel = new JPanel(cardLayout);
 
         mainPanel.add(createLoginPanel(), "Login");
-        mainPanel.add(new RightSidePanel(this), "RightSidePanel"); // Pass the current instance
+        mainPanel.add(new RightSidePanel(), "RightSidePanel"); // Pass the current instance
 
         frame.getContentPane().add(mainPanel);
         frame.setVisible(true);
