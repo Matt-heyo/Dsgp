@@ -1,25 +1,91 @@
 package BookManagement;
 
+
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class PatronPanel extends JPanel {
+    private DefaultListModel<String> patronListModel;
+    private JTextField libraryCardField;
+    private JTextField patronNameField;
+    private Management management; // Reference to the Management class
 
-    public PatronPanel() {
+    public PatronPanel(Management management) {
+        this.management = management; // Initialize the management instance
         setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("Patron Management", SwingConstants.CENTER);
         add(titleLabel, BorderLayout.NORTH);
 
-        DefaultListModel<String> patronListModel = new DefaultListModel<>();
-        JList<String> patronList = new JList<>(patronListModel);
+        // Create the list model and JList
+        patronListModel = new DefaultListModel<>();
         List<Patron> patrons = FileManager.loadPatronsFromFile();
 
+        // Populate the list with patrons
         for (Patron patron : patrons) {
             patronListModel.addElement(patron.getName() + " - Card#: " + patron.getLibraryCardNumber());
         }
 
-        add(new JScrollPane(patronList), BorderLayout.CENTER);
+        // Create input panel for adding patrons and checking out books
+        JPanel inputPanel = new JPanel(new GridLayout(4, 2));
+
+        // Library Card Number
+        inputPanel.add(new JLabel("Library Card Number:"));
+        libraryCardField = new JTextField();
+        inputPanel.add(libraryCardField);
+
+        // Patron Name
+        inputPanel.add(new JLabel("Patron Name:"));
+        patronNameField = new JTextField();
+        inputPanel.add(patronNameField);
+
+        // Add buttons
+        JButton addPatronButton = new JButton("Add Patron");
+
+        // Add action listeners to buttons
+        addPatronButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addPatron(); // Call the method to add a patron
+            }
+        });
+
+        // Add buttons to the input panel
+        inputPanel.add(addPatronButton);
+
+        // Add input panel to the main panel
+        add(inputPanel, BorderLayout.CENTER);
+    }
+
+    private void addPatron() {
+        try {
+            int libraryCardNumber = Integer.parseInt(libraryCardField.getText().trim());
+            String patronName = patronNameField.getText().trim();
+
+            if (patronName.isEmpty()) {
+                throw new IllegalArgumentException("Patron name cannot be empty.");
+            }
+
+            Patron newPatron = new Patron(patronName, libraryCardNumber);
+            management.addPatron(newPatron);
+            patronListModel.addElement(newPatron.getName() + " - Card#: " + newPatron.getLibraryCardNumber());
+            JOptionPane.showMessageDialog(this, "Patron added successfully!");
+            clearFields();
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Library card number must be a valid integer.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        }
+    }
+
+    private void clearFields() {
+        libraryCardField.setText("");
+        patronNameField.setText("");
+        
     }
 }
+      
