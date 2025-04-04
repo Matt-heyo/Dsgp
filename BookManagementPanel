@@ -198,7 +198,7 @@ public class BookManagementPanel extends JPanel {
         clearFields();
         CardLayout cl = (CardLayout) (inputPanel.getLayout());
         cl.show(inputPanel, "SearchBook");
-        showMessage("Enter the title to search:");
+        showMessage("Enter either the title,author or ISBN to search:");
     }
 
     private void displayBooks() {
