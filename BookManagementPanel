@@ -1,25 +1,235 @@
 package BookManagement;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class BookManagementPanel extends JPanel {
+    private JToolBar toolBar;
+    private Management management; // Reference to the Management class
+    private JPanel inputPanel; // Declare inputPanel
 
-    public BookManagementPanel() {
+    // Input fields for adding a book
+    private JTextField titleField, authorField, isbnField, yearField, amountField;
+
+    // Input fields for removing a book
+    private JTextField removeTitleField, removeAmountField;
+
+    // Input fields for searching a book
+    private JTextField searchTitleField;
+
+    private RightSidePanel rightSidePanel; // Reference to the RightSidePanel
+
+    public BookManagementPanel(Management management, RightSidePanel rightSidePanel) {
+        this.management = management; // Initialize the management instance
+        this.rightSidePanel = rightSidePanel; // Initialize the right side panel
         setLayout(new BorderLayout());
+        setBorder(BorderFactory.createTitledBorder("Book Management")); // Set a border for the panel
 
-        JLabel titleLabel = new JLabel("Book Management", SwingConstants.CENTER);
-        add(titleLabel, BorderLayout.NORTH);
+        // Create the toolbar
+        toolBar = new JToolBar("Book Management");
+        toolBar.setFloatable(false); // Make the toolbar non-floatable
 
-        DefaultListModel<String> bookListModel = new DefaultListModel<>();
-        JList<String> bookList = new JList<>(bookListModel);
-        List<Books> books = FileManager.loadBooksFromFile();
-        
-        for (Books book : books) {
-            bookListModel.addElement(book.getTitle() + " - " + book.getAuthor());
+        // Create buttons for the toolbar
+        JButton addButton = new JButton("Add Book");
+        JButton removeButton = new JButton("Remove Book");
+        JButton searchButton = new JButton("Search Book");
+        JButton displayButton = new JButton("Display All Books");
+        JButton exitButton = new JButton("Exit");
+
+        // Add action listeners to the buttons
+        addButton.addActionListener(e -> showAddBookFields());
+        removeButton.addActionListener(e -> showRemoveBookFields());
+        searchButton.addActionListener(e -> showSearchBookFields());
+        displayButton.addActionListener(e -> displayBooks());
+        exitButton.addActionListener(e -> exitToRightSidePanel());
+
+        // Add buttons to the toolbar
+        toolBar.add(addButton);
+        toolBar.add(removeButton);
+        toolBar.add(searchButton);
+        toolBar.add(displayButton);
+        toolBar.add(exitButton);
+
+        // Add the toolbar to the panel
+        add(toolBar, BorderLayout.NORTH);
+
+        // Create input fields panel
+        inputPanel = new JPanel(new CardLayout());
+        inputPanel.add("AddBook", createAddBookPanel());
+        inputPanel.add("RemoveBook", createRemoveBookPanel());
+        inputPanel.add("SearchBook", createSearchBookPanel());
+
+        // Initially hide input fields
+        add(inputPanel, BorderLayout.CENTER);
+    }
+
+    private JPanel createAddBookPanel() {
+        JPanel panel = new JPanel(new GridLayout(6, 2));
+        panel.add(new JLabel("Title:"));
+        titleField = new JTextField();
+        panel.add(titleField);
+
+        panel.add(new JLabel("Author:"));
+        authorField = new JTextField();
+        panel.add(authorField);
+
+        panel.add(new JLabel("ISBN:"));
+        isbnField = new JTextField();
+        panel.add(isbnField);
+
+        panel.add(new JLabel("Publication Year:"));
+        yearField = new JTextField();
+        panel.add(yearField);
+
+        panel.add(new JLabel("Amount:"));
+        amountField = new JTextField();
+        panel.add(amountField);
+
+        // Create a button for submitting the add book action
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(e -> addBook());
+        panel.add(submitButton);
+
+        return panel;
+    }
+
+    private JPanel createRemoveBookPanel() {
+        JPanel panel = new JPanel(new GridLayout(3, 2));
+        panel.add(new JLabel("Title:"));
+        removeTitleField = new JTextField();
+        panel.add(removeTitleField);
+
+        panel.add(new JLabel("Amount:"));
+        removeAmountField = new JTextField();
+        panel.add(removeAmountField);
+
+        // Create a button for submitting the remove book action
+        JButton removeButton = new JButton("Remove");
+        removeButton.addActionListener(e -> removeBook());
+        panel.add(removeButton);
+
+        return panel;
+    }
+
+    private JPanel createSearchBookPanel() {
+        JPanel panel = new JPanel(new GridLayout(2, 2));
+        panel.add(new JLabel("Title:"));
+        searchTitleField = new JTextField();
+        panel.add(searchTitleField);
+
+        // Create a button for submitting the search book action
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> searchBook());
+        panel.add(searchButton);
+
+        return panel;
+    }
+
+    private void showAddBookFields() {
+        clearFields();
+        CardLayout cl = (CardLayout) (inputPanel.getLayout());
+        cl.show(inputPanel, "AddBook");
+        showMessage("Enter book details to add:");
+    }
+
+    private void showRemoveBookFields() {
+        clearFields();
+        CardLayout cl = (CardLayout) (inputPanel.getLayout());
+        cl.show(inputPanel, "RemoveBook");
+        showMessage("Enter the title and amount to remove:");
+    }
+
+    private void showSearchBookFields() {
+        clearFields();
+        CardLayout cl = (CardLayout) (inputPanel.getLayout());
+        cl.show(inputPanel, "SearchBook");
+        showMessage("Enter the title to search:");
+    }
+
+    private void displayBooks() {
+        // Call the displayBooks method from Management class
+        management.displayBooks();
+        showMessage("Books displayed.");
+    }
+
+    private void addBook() {
+        // Get the input values
+        String title = titleField.getText();
+        String author = authorField.getText();
+        String isbnStr = isbnField.getText();
+        String yearStr = yearField.getText();
+        String amountStr = amountField.getText();
+
+        // Validate and convert input values
+        try {
+            int isbn = Integer.parseInt(isbnStr);
+            int year = Integer.parseInt(yearStr);
+            int amount = Integer.parseInt(amountStr);
+
+            // Call the management method to add the book
+            management.addBook(title, author, isbn, year, amount);
+            showMessage("Book added successfully.");
+        } catch (NumberFormatException e) {
+            showMessage("Error: ISBN, Year, and Amount must be valid integers.");
+        } catch (Exception e) {
+            showMessage("Error: " + e.getMessage());
         }
+    }
 
-        add(new JScrollPane(bookList), BorderLayout.CENTER);
+    private void removeBook() {
+        // Get the input values
+        String title = removeTitleField.getText();
+        String amountStr = removeAmountField.getText();
+
+        // Validate and convert input values
+        try {
+            int amount = Integer.parseInt(amountStr);
+
+            // Call the management method to remove the book
+            boolean removed = management.deleteAmount(title, amount);
+            if (removed) {
+                showMessage("Successfully removed " + amount + " copies.");
+            } else {
+                showMessage("Error: Not enough copies to remove or book not found.");
+            }
+        } catch (NumberFormatException e) {
+            showMessage("Error: Amount must be a valid integer.");
+        } catch (Exception e) {
+            showMessage("Error: " + e.getMessage());
+        }
+    }
+
+    private void searchBook() {
+        // Get the input value
+        String title = searchTitleField.getText();
+
+        // Call the management method to search for the book
+        Books foundBook = management.libraryBST.searchByTitle(title);
+        if (foundBook != null) {
+            showMessage("Book Found: " + foundBook);
+        } else {
+            showMessage("Book Not Found");
+        }
+    }
+
+    private void clearFields() {
+        titleField.setText("");
+        authorField.setText("");
+        isbnField.setText("");
+        yearField.setText("");
+        amountField.setText("");
+        removeTitleField.setText("");
+        removeAmountField.setText("");
+        searchTitleField.setText("");
+    }
+
+    private void exitToRightSidePanel() {
+        // Logic to go back to the right-side panel
+        rightSidePanel.showPanel("HOME"); // Assuming "HOME" is the name of the home panel
+    }
+
+    private void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
     }
 }
