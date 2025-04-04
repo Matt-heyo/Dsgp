@@ -1,4 +1,4 @@
-package BookManagement;
+ package BookManagement;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,6 +19,8 @@ public class BookManagementPanel extends JPanel {
     private JTextField searchTitleField;
 
     private RightSidePanel rightSidePanel; // Reference to the RightSidePanel
+    private JTextField textField;
+    private JTextField textField_1;
 
     public BookManagementPanel(Management management, RightSidePanel rightSidePanel) {
         this.management = management; // Initialize the management instance
@@ -65,29 +67,46 @@ public class BookManagementPanel extends JPanel {
     }
 
     private JPanel createAddBookPanel() {
-        JPanel panel = new JPanel(new GridLayout(6, 2));
-        panel.add(new JLabel("Title:"));
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+        JLabel label = new JLabel("Title:");
+        label.setBounds(0, 1, 266, 54);
+        panel.add(label);
         titleField = new JTextField();
+        titleField.setBounds(266, 1, 266, 54);
         panel.add(titleField);
 
-        panel.add(new JLabel("Author:"));
+        JLabel label_1 = new JLabel("Author:");
+        label_1.setBounds(0, 55, 266, 54);
+        panel.add(label_1);
         authorField = new JTextField();
+        authorField.setBounds(266, 55, 266, 54);
         panel.add(authorField);
 
-        panel.add(new JLabel("ISBN:"));
+        JLabel label_2 = new JLabel("ISBN:");
+        label_2.setBounds(0, 109, 266, 54);
+        panel.add(label_2);
         isbnField = new JTextField();
+        isbnField.setBounds(266, 109, 266, 54);
         panel.add(isbnField);
 
-        panel.add(new JLabel("Publication Year:"));
+        JLabel label_3 = new JLabel("Publication Year:");
+        label_3.setBounds(0, 163, 266, 54);
+        panel.add(label_3);
         yearField = new JTextField();
+        yearField.setBounds(266, 163, 266, 54);
         panel.add(yearField);
 
-        panel.add(new JLabel("Amount:"));
+        JLabel label_4 = new JLabel("Amount:");
+        label_4.setBounds(0, 217, 266, 54);
+        panel.add(label_4);
         amountField = new JTextField();
+        amountField.setBounds(266, 217, 266, 54);
         panel.add(amountField);
 
         // Create a button for submitting the add book action
         JButton submitButton = new JButton("Submit");
+        submitButton.setBounds(139, 272, 173, 54);
         submitButton.addActionListener(e -> addBook());
         panel.add(submitButton);
 
@@ -95,17 +114,25 @@ public class BookManagementPanel extends JPanel {
     }
 
     private JPanel createRemoveBookPanel() {
-        JPanel panel = new JPanel(new GridLayout(3, 2));
-        panel.add(new JLabel("Title:"));
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+        JLabel label = new JLabel("Title:");
+        label.setBounds(0, 1, 266, 108);
+        panel.add(label);
         removeTitleField = new JTextField();
+        removeTitleField.setBounds(266, 1, 266, 108);
         panel.add(removeTitleField);
 
-        panel.add(new JLabel("Amount:"));
+        JLabel label_1 = new JLabel("Amount:");
+        label_1.setBounds(0, 109, 266, 108);
+        panel.add(label_1);
         removeAmountField = new JTextField();
+        removeAmountField.setBounds(266, 109, 266, 108);
         panel.add(removeAmountField);
 
         // Create a button for submitting the remove book action
         JButton removeButton = new JButton("Remove");
+        removeButton.setBounds(136, 263, 180, 57);
         removeButton.addActionListener(e -> removeBook());
         panel.add(removeButton);
 
@@ -113,15 +140,42 @@ public class BookManagementPanel extends JPanel {
     }
 
     private JPanel createSearchBookPanel() {
-        JPanel panel = new JPanel(new GridLayout(2, 2));
-        panel.add(new JLabel("Title:"));
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+        JLabel label = new JLabel("Title:");
+        label.setBounds(6, 47, 176, 78);
+        panel.add(label);
         searchTitleField = new JTextField();
+        searchTitleField.setBounds(78, 56, 284, 61);
         panel.add(searchTitleField);
 
         // Create a button for submitting the search book action
         JButton searchButton = new JButton("Search");
+        searchButton.setBounds(78, 278, 150, 42);
         searchButton.addActionListener(e -> searchBook());
         panel.add(searchButton);
+        
+        JLabel lblNewLabel = new JLabel("Author");
+        lblNewLabel.setBounds(6, 136, 83, 47);
+        panel.add(lblNewLabel);
+        
+        JLabel lblNewLabel_1 = new JLabel("ISBN");
+        lblNewLabel_1.setBounds(6, 219, 83, 47);
+        panel.add(lblNewLabel_1);
+        
+        textField = new JTextField();
+        textField.setBounds(78, 129, 284, 61);
+        panel.add(textField);
+        textField.setColumns(10);
+        
+        textField_1 = new JTextField();
+        textField_1.setBounds(78, 202, 284, 64);
+        panel.add(textField_1);
+        textField_1.setColumns(10);
+        
+        JLabel lblNewLabel_2 = new JLabel("Select an option to search for a book:");
+        lblNewLabel_2.setBounds(92, 6, 308, 16);
+        panel.add(lblNewLabel_2);
 
         return panel;
     }
@@ -233,3 +287,5 @@ public class BookManagementPanel extends JPanel {
         JOptionPane.showMessageDialog(this, message);
     }
 }
+
+    
