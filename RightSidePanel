@@ -1,4 +1,4 @@
-package BookManagement;
+  package BookManagement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,10 +6,8 @@ import java.awt.*;
 public class RightSidePanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel contentPanel;
-    private LibraryGUI mainGUI; // Reference to the main GUI
 
-    public RightSidePanel(LibraryGUI mainGUI) {
-        this.mainGUI = mainGUI; // Store the reference to the main GUI
+    public RightSidePanel() {
         setLayout(new BorderLayout());
 
         // Create and set the menu bar
@@ -18,25 +16,17 @@ public class RightSidePanel extends JPanel {
 
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
-        
-        // Create instances of the panels
         CheckInOutPanel checkInOutPanel = new CheckInOutPanel();
         SearchBookPanel searchBookPanel = new SearchBookPanel();
         StatisticsPanel statisticsPanel = new StatisticsPanel();
-        BookManagementPanel bookManagementPanel = new BookManagementPanel();
-        PatronPanel patronPanel = new PatronPanel();
-
-        // Adding panels to contentPanel
-        contentPanel.add(bookManagementPanel, "ManageBooks");
-        contentPanel.add(patronPanel, "ManagePatrons");
+        
+                BookManagementPanel bookManagementPanel = new BookManagementPanel(null, null);
+                contentPanel.add(bookManagementPanel, "name_2352874056045084");
+        PatronPanel patronPanel = new PatronPanel(null);
+        contentPanel.add(patronPanel, "name_2353119893193459");
         contentPanel.add(checkInOutPanel, "CheckInOut");
         contentPanel.add(searchBookPanel, "Search");
         contentPanel.add(statisticsPanel, "Statistics");
-
-        // Home Panel
-        JPanel homePanel = new JPanel();
-        homePanel.add(new JLabel("Welcome to the Library Management System! Select an option from the left menu."));
-        contentPanel.add(homePanel, "Home");
 
         add(contentPanel, BorderLayout.CENTER);
     }
@@ -48,36 +38,33 @@ public class RightSidePanel extends JPanel {
 
         JMenu menu = new JMenu("Menu");
         JMenuItem manageBooksItem = new JMenuItem("Manage Books");
+        manageBooksItem.setSelected(true);
         JMenuItem managePatronsItem = new JMenuItem("Manage Patrons");
-        JMenuItem checkInOutItem = new JMenuItem("Check In/Out");
-        JMenuItem searchBookItem = new JMenuItem("Search for Book");
-        JMenuItem statisticsItem = new JMenuItem("Statistics");
         JMenuItem logoutItem = new JMenuItem("Logout");
 
-        // Action listeners for menu items
-        manageBooksItem.addActionListener(e -> showPanel("ManageBooks"));
-        managePatronsItem.addActionListener(e -> showPanel("ManagePatrons"));
-        checkInOutItem.addActionListener(e -> showPanel("CheckInOut"));
-        searchBookItem.addActionListener(e -> showPanel("Search"));
-        statisticsItem.addActionListener(e -> showPanel("Statistics"));
-        logoutItem.addActionListener(e -> showLoginPanel()); // Logout action
+        manageBooksItem.addActionListener(e -> showBookManagement());
+        managePatronsItem.addActionListener(e -> showPatronManagement());
+        logoutItem.addActionListener(e -> showLoginPanel());
 
-        // Adding items to the menu
         menu.add(manageBooksItem);
         menu.add(managePatronsItem);
-        menu.add(checkInOutItem);
-        menu.add(searchBookItem);
-        menu.add(statisticsItem);
         menu.add(logoutItem);
         menuBar.add(menu);
 
         return menuBar;
     }
 
+    
+    private void showBookManagement() {
+        // Logic to show book management panel
+    }
+
+    private void showPatronManagement() {
+        // Logic to show patron management panel
+    }
+
     private void showLoginPanel() {
-        // Switch back to the login panel in the main GUI
-        CardLayout layout = (CardLayout) mainGUI.getMainPanel().getLayout(); // Use the getter
-        layout.show(mainGUI.getMainPanel(), "Login"); // Show the login panel
+        // Logic to show login panel
     }
 
     public void showPanel(String panelName) {
